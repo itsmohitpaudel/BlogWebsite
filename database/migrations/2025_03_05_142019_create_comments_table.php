@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->longText('comment_text');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->unsignedBigInteger('post_id');
+            $table->morphs('post_id');
             $table->timestamps();
         });
     }
