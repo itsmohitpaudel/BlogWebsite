@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,7 +14,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        // $post = Post::latest()->get();
+
+        return Category::latest()->get()();
     }
 
     /**
@@ -20,7 +24,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'category_name' => 'required|max:255',
+        ]);
+
+        Category::create([
+            'category_name' => $request->category_name,
+        ]);
+
+        return response()->json(['message' => 'Category successfully created']);
     }
 
     /**
