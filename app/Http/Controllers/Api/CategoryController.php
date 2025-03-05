@@ -16,7 +16,7 @@ class CategoryController extends Controller
     {
         // $post = Post::latest()->get();
 
-        return Category::latest()->get()();
+        return Category::latest()->get();
     }
 
     /**
