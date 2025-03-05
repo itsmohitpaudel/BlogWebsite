@@ -7,12 +7,16 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
 
-    public function authenticate() {
-        
+    public function user()
+    {
+        $user = Auth::user();
+
+        return response($user);
     }
 
     public function register(Request $request)
@@ -31,6 +35,7 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
+            'user' => $user,
             'message' => 'Author registered successfully',
             'token' => $user->createToken('API Token')->plainTextToken
         ], 201);
@@ -43,6 +48,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
+
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
@@ -50,8 +56,9 @@ class AuthController extends Controller
         $user = Auth::user();
 
         return response()->json([
-            'message' => 'Login successful',
-            'token' => $user->createToken('API Token')->plainTextToken
+            'user' => $user,
+            // 'message' => 'Login successful',
+            'token' => $user->createToken('API Token')->plainTextToken,
         ]);
     }
 
