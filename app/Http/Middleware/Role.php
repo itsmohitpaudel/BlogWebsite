@@ -18,7 +18,7 @@ class Role
     {
         // Check if the user is authenticated & has the correct role
         if (!Auth::check() || Auth::user()->role !== $role) {
-            return redirect()->back();
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         return $next($request);
