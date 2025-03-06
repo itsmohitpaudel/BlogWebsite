@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -86,6 +87,32 @@ class TagController extends Controller
         return response()->json([
             'message' => 'Tag retrieved successfully',
             'data' => $tag
+        ], 200);
+    }
+
+    public function attachTags(Request $request, $id)
+    {
+        $post = Post::where('id', $id)
+            ->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post not found',
+                'data' => null
+            ], 404);
+        }
+        
+        $validatedData = $request->validate([
+            'tags' => 'required|array',
+            'tags.*' => 'exists:tags,id'
+        ]);
+
+
+        $post->tags()->sync($validatedData['tags']);
+
+        return response()->json([
+            'message' => 'Tags attached successfully',
+            'data' => $post->tags
         ], 200);
     }
 
