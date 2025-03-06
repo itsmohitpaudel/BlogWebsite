@@ -65,13 +65,17 @@ class PostController extends Controller
         $post = Post::where('slug', $slug)
             ->with('category')
             ->with('author')
-            ->firstOrFail();
+            ->first();
 
         // if (Gate::allows('view', $post)) {
         //     return response()->json(['message' => 'Unauthorized'], 403);
         // }
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
 
         Gate::authorize('view', $post);
+
 
         return response()->json($post, 200);
     }
@@ -81,7 +85,11 @@ class PostController extends Controller
      */
     public function update(Request $request, $slug)
     {
-        $post = Post::where('slug', $slug)->firstOrFail();
+        $post = Post::where('slug', $slug)->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
 
         if (!Gate::allows('update', $post)) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -115,9 +123,13 @@ class PostController extends Controller
      */
     public function destroy($slug)
     {
-        $post = Post::where('slug', $slug)->firstOrFail();
+        $post = Post::where('slug', $slug)->first();
 
         // Gate::authorize('delete', $post);
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
 
         if (!Gate::allows('delete', $post)) {
             return response()->json(['message' => 'Unauthorized'], 403);
