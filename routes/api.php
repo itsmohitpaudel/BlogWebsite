@@ -30,4 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('tags', TagController::class);
     Route::apiResource('comments', CommentController::class);
+
+    // Admin only route for updating User Role
+    Route::patch('/users/{id}/update-role', [UserController::class, 'updateRole']);
 });

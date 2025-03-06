@@ -41,6 +41,14 @@ class UserPolicy
         return $user->role === 'admin' || $user->id === $user->id;
     }
 
+    // Determining whether user can update another user's role
+
+    public function updateRole(User $user, User $User): bool
+    {
+        //Admin can update any user's role
+        return $user->role === 'admin';
+    }
+
     /**
      * Determine whether the user can delete the model.
      */
