@@ -16,7 +16,11 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
-        return response($user);
+        if (!$user) {
+            return response()->json(['message' => 'User is not logged in'], 401);
+        }
+
+        return response()->json(['message' => 'User is logged in', 'user' => $user], 200);
     }
 
     public function register(Request $request)
