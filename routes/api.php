@@ -22,7 +22,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 //     return Auth::user();
 // });
 
-Route::get('/user', [AuthController::class, 'user']);
+Route::get('/user', [AuthController::class, 'LoggedInUser']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('categories', CategoryController::class);
