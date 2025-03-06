@@ -14,19 +14,35 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Post $post)
+    public function index($id)
     {
+        $post = Post::where('id', $id)
+            ->first();
+
         return response()->json([
             'message' => 'Comments retrieved successfully',
-            'data' => $post->comments()->with('user')->get()
+            'data' => $post->comments()
+                ->with('user')
+                ->with('commentable')
+                ->get()
         ], 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Post $post)
+    public function store(Request $request, $id)
     {
+        $post = Post::where('id', $id)
+            ->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post not found',
+                'data' => null
+            ], 404);
+        }
+
         $validatedData = $request->validate([
             'content' => 'required|string'
         ]);
