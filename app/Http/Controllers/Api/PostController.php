@@ -15,10 +15,24 @@ class PostController extends Controller
      */
     public function index()
     {
-        return response()->json(Post::with(
-            'category',
-            'author'
-        )->get(), 200);
+        $post = Post::latest()
+            ->with(
+                'category',
+                'author'
+            )
+            ->get();
+
+        if ($post->isEmpty()) {
+            return response()->json([
+                'message' => 'No Posts Found',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Posts retrieved successfully',
+            'data' => $post
+        ], 200);
     }
 
     /**
@@ -26,35 +40,27 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!Gate::allows('create', Post::class)) {
-        //     return response()->json(['message' => 'Unauthorized'], 403);
-        // }
-
         Gate::authorize('create', Post::class);
 
-        // // Ensure user is authenticated
-        // if (!$request->user()) {
-        //     return response()->json(['message' => 'Unauthorized'], 401);
-        // }
-
-
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            // 'author_id' => 'required|int',
             'status' => 'required|in:published,draft'
         ]);
 
-        Post::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'category_id' => $request->category_id,
-            'author_id' => $request->user()->id,
-            'status' => $request->status
+        $post = Post::create([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'category_id' => $validatedData['category_id'],
+            'author_id' => $request->user()->id, //Ensures the logged-in user is the author
+            'status' => $validatedData['status']
         ]);
 
-        return response()->json(['message' => 'Post created successfully']);
+        return response()->json([
+            'message' => 'Post created successfully',
+            'data' => $post
+        ], 201);
     }
 
     /**
@@ -63,21 +69,27 @@ class PostController extends Controller
     public function show($slug)
     {
         $post = Post::where('slug', $slug)
-            ->with('category')
-            ->with('author')
+            ->with('category', 'author')
             ->first();
 
-        // if (Gate::allows('view', $post)) {
-        //     return response()->json(['message' => 'Unauthorized'], 403);
-        // }
+
+        // Checks if the post exists
         if (!$post) {
-            return response()->json(['message' => 'Post not found'], 404);
+            return response()->json([
+                'message' => 'Post not found',
+                'data' => null
+            ], 404);
         }
 
+        // Checks authorization
         Gate::authorize('view', $post);
 
 
-        return response()->json($post, 200);
+        // Returns post
+        return response()->json([
+            'message' => 'Post retrieved successfully',
+            'data' => $post
+        ], 200);
     }
 
     /**
@@ -85,21 +97,25 @@ class PostController extends Controller
      */
     public function update(Request $request, $slug)
     {
+        // Finds post
         $post = Post::where('slug', $slug)->first();
 
+        // If the post is not found
         if (!$post) {
-            return response()->json(['message' => 'Post not found'], 404);
-        }
-
-        if (!Gate::allows('update', $post)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return response()->json([
+                'message' => 'Post not found',
+                'data' => null
+            ], 404);
         }
 
         // Gate::authorize('update', $post);
 
-        // return response()->json($post);
-
-        // \Log::info('Incoming PATCH Data', ['request' => $request->all()]);
+        if (!Gate::allows('update', $post)) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'data' => null,
+            ], 403);
+        }
 
         $validatedData = $request->validate([
             'title' => 'sometimes|required|string|max:255',
@@ -109,13 +125,19 @@ class PostController extends Controller
         ]);
 
 
-        if (!empty($validatedData)) {
-            $post->update($validatedData);
-        } else {
-            return response()->json(['message' => 'No data provided for update'], 400);
+        if (empty($validatedData)) {
+            return response()->json([
+                'message' => 'No data given for update',
+                'data' => null
+            ], 400);
         }
 
-        return response()->json(['message' => 'Post updated successfully', 'post' => $post]);
+        $post->update($validatedData);
+
+        return response()->json([
+            'message' => 'Post updated successfully',
+            'data' => $post
+        ], 200);
     }
 
     /**
@@ -123,20 +145,31 @@ class PostController extends Controller
      */
     public function destroy($slug)
     {
+        // Finds the post
         $post = Post::where('slug', $slug)->first();
 
         // Gate::authorize('delete', $post);
 
         if (!$post) {
-            return response()->json(['message' => 'Post not found'], 404);
+            return response()->json([
+                'message' => 'Post not found',
+                'data' => null
+            ], 404);
         }
 
         if (!Gate::allows('delete', $post)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return response()->json([
+                'message' => 'Unauthorized',
+                'data' => null
+            ], 403);
         }
 
+        // Delete the post
         $post->delete();
 
-        return response()->json(['message' => 'Post deleted successfully']);
+        return response()->json([
+            'message' => 'Post deleted successfully',
+            'data' => null
+        ], 200);
     }
 }
