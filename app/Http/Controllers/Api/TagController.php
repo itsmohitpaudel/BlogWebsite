@@ -11,20 +11,21 @@ use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
-    public function index()
+    public function index($id)
     {
-        $tag = Tag::latest()->get();
+        $post = Post::where('id', $id)->first();
 
-        if ($tag->isEmpty()) {
+        if (!$post) {
             return response()->json([
-                'message' => 'No Tags Found',
+                'message' => 'No Post Found',
                 'data' => []
             ], 200);
         }
 
         return response()->json([
             'message' => 'Tags retrieved successfully',
-            'data' => $tag
+            'post' => $post->title,
+            'data' => $post->tags()->get()
         ], 200);
     }
 
@@ -101,7 +102,7 @@ class TagController extends Controller
                 'data' => null
             ], 404);
         }
-        
+
         $validatedData = $request->validate([
             'tags' => 'required|array',
             'tags.*' => 'exists:tags,id'
