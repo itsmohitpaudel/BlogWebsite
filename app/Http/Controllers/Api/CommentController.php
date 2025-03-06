@@ -21,6 +21,7 @@ class CommentController extends Controller
 
         return response()->json([
             'message' => 'Comments retrieved successfully',
+            'post' => $post->title,
             'data' => $post->comments()
                 ->with('user')
                 ->with('commentable')
