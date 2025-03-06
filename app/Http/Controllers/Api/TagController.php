@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        // $post = Post::latest()->get();
+
+        return Tag::latest()->get();
     }
 
     /**
@@ -20,7 +20,15 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'tag_name' => 'required|max:255',
+        ]);
+
+        Tag::create([
+            'tag_name' => $request->tag_name,
+        ]);
+
+        return response()->json(['message' => 'Tag successfully created']);
     }
 
     /**
