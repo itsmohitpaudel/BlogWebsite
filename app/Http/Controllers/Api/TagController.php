@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
@@ -39,8 +40,19 @@ class TagController extends Controller
         }
 
         $validatedData = $request->validate([
-            'tag_name' => 'required|string|max:255',
+            'tag_name' => 'required|string|max:255|unique:tags,tag_name',
         ]);
+
+        // Ensure slug is unique
+        $validatedData['tag_slug'] = Str::slug($validatedData['tag_name']);
+
+        // Check if the tag already exists
+        if (Tag::where('tag_slug', $validatedData['tag_slug'])->exists()) {
+            return response()->json([
+                'message' => 'Tag with this name already exists',
+                'data' => null
+            ], 409); // 409 Conflict
+        }
 
         $tag = Tag::create([
             'tag_name' => $validatedData['tag_name'],
