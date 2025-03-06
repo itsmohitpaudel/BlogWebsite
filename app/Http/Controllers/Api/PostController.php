@@ -73,7 +73,7 @@ class PostController extends Controller
 
         Gate::authorize('view', $post);
 
-        return response()->json(['message' => 'Unauthorized'], 403);
+        return response()->json($post, 200);
     }
 
     /**
