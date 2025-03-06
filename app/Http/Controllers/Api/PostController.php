@@ -68,7 +68,7 @@ class PostController extends Controller
             ->firstOrFail();
 
         // if (Gate::allows('view', $post)) {
-        //     return response()->json($post, 200);
+        //     return response()->json(['message' => 'Unauthorized'], 403);
         // }
 
         Gate::authorize('view', $post);
@@ -83,11 +83,11 @@ class PostController extends Controller
     {
         $post = Post::where('slug', $slug)->firstOrFail();
 
-        // if (!Gate::allows('update', $post)) {
-        //     return response()->json(['message' => 'Unauthorized'], 403);
-        // }
+        if (!Gate::allows('update', $post)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
-        Gate::authorize('update', $post);
+        // Gate::authorize('update', $post);
 
         // return response()->json($post);
 
@@ -117,7 +117,11 @@ class PostController extends Controller
     {
         $post = Post::where('slug', $slug)->firstOrFail();
 
-        Gate::authorize('delete', $post);
+        // Gate::authorize('delete', $post);
+
+        if (!Gate::allows('delete', $post)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
         $post->delete();
 
