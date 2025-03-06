@@ -22,10 +22,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 //     return Auth::user();
 // });
 
-Route::apiResource('categories', CategoryController::class);
 Route::get('/user', [AuthController::class, 'user']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('categories', CategoryController::class);
     Route::apiResource('posts', PostController::class);
     Route::apiResource('users', UserController::class);
     Route::apiResource('tags', TagController::class);
