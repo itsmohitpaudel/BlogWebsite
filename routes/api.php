@@ -31,6 +31,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tags', TagController::class);
     Route::apiResource('comments', CommentController::class);
 
+    // For Comments
+    Route::post('/posts/{id}/comments', [CommentController::class, 'store']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+
+    // For Tags
+    Route::post('/posts/{id}/tags', [TagController::class, 'attachTags']);
+
     // Admin only route for updating User Role
     Route::patch('/users/{id}/update-role', [UserController::class, 'updateRole']);
 });
