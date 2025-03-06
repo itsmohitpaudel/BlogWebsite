@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
 
-    public function user()
+    public function LoggedInUser(Request $request)
     {
         $user = Auth::user();
 
@@ -35,7 +35,6 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'user' => $user,
             'message' => 'Author registered successfully',
             'token' => $user->createToken('API Token')->plainTextToken
         ], 201);
