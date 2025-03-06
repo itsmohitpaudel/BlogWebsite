@@ -68,9 +68,34 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $comment = Comment::where('id', $id)->first();
+
+        if (!$comment) {
+            return response()->json([
+                'message' => 'Comment not found',
+                'data' => null
+            ], 404);
+        }
+
+        if (!Gate::allows('update', $comment)) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'data' => null,
+            ], 403);
+        }
+
+        $validatedData = $request->validate([
+            'content' => 'required|string|max:1000'
+        ]);
+
+        $comment->update($validatedData);
+
+        return response()->json([
+            'message' => 'Comment updated successfully',
+            'data' => $comment
+        ], 200);
     }
 
     /**
