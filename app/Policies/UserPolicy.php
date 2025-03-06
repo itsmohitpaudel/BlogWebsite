@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin'; //Only Admin can do this
     }
 
     /**
@@ -20,7 +20,8 @@ class UserPolicy
      */
     public function view(User $user, User $User): bool
     {
-        return false;
+        //Admin can view any user while user can view their profile
+        return $user->role === 'admin' || $user->id === $user->id;
     }
 
     /**
@@ -28,7 +29,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role === 'admin'; //Only Admin can do this
     }
 
     /**
@@ -36,7 +37,8 @@ class UserPolicy
      */
     public function update(User $user, User $User): bool
     {
-        return false;
+        //Admin can update any user while user can update their profile
+        return $user->role === 'admin' || $user->id === $user->id;
     }
 
     /**
@@ -44,7 +46,8 @@ class UserPolicy
      */
     public function delete(User $user, User $User): bool
     {
-        return false;
+        return $user->role === 'admin' && $user->id !== $user;
+        // Admins can delete any user except themselves
     }
 
     /**
