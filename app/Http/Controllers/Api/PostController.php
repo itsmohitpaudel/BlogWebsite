@@ -72,9 +72,31 @@ class PostController extends Controller
         }
 
         return response()->json([
-            'message' => 'Tags retrieved successfully',
-            'post' => $post->title,
+            'message' => 'Post wise tags retrieved successfully',
+            'post' => $post,
             'data' => $post->tags()->get()
+        ], 200);
+    }
+
+    public function postWiseComments($id)
+    {
+        $post = Post::where('id', $id)
+            ->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'No Post Found',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Post wise comments retrieved successfully',
+            'post' => $post,
+            'data' => $post->comments()
+                ->with('user')
+                ->with('commentable')
+                ->get()
         ], 200);
     }
 

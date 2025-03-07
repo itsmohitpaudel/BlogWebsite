@@ -14,18 +14,22 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($id)
+    public function index()
     {
-        $post = Post::where('id', $id)
-            ->first();
+        $comment = Comment::with(
+            'commentable'
+        )->get();
+
+        if ($comment->isEmpty()) {
+            return response()->json([
+                'message' => 'No Comments Found',
+                'data' => []
+            ], 200);
+        }
 
         return response()->json([
             'message' => 'Comments retrieved successfully',
-            'post' => $post->title,
-            'data' => $post->comments()
-                ->with('user')
-                ->with('commentable')
-                ->get()
+            'data' => $comment
         ], 200);
     }
 
