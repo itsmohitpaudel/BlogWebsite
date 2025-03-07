@@ -11,23 +11,24 @@ use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
-    public function index($id)
+    public function index()
     {
-        $post = Post::where('id', $id)->first();
+        $tag = Tag::latest()->get();
 
-        if (!$post) {
+        if ($tag->isEmpty()) {
             return response()->json([
-                'message' => 'No Post Found',
+                'message' => 'No Tags Found',
                 'data' => []
             ], 200);
         }
 
         return response()->json([
             'message' => 'Tags retrieved successfully',
-            'post' => $post->title,
-            'data' => $post->tags()->get()
+            'data' => $tag
         ], 200);
     }
+
+
 
     /**
      * Store a newly created resource in storage.

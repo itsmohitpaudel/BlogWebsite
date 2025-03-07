@@ -63,6 +63,51 @@ class PostController extends Controller
         ], 201);
     }
 
+    public function postWiseTags($id)
+    {
+        $post = Post::where('id', $id)->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'No Post Found',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Tags retrieved successfully',
+            'post' => $post->title,
+            'data' => $post->tags()->get()
+        ], 200);
+    }
+
+    public function attachTags(Request $request, $id)
+    {
+        $post = Post::where('id', $id)
+            ->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post not found',
+                'data' => null
+            ], 404);
+        }
+
+        $validatedData = $request->validate([
+            'tags' => 'required|array',
+            'tags.*' => 'exists:tags,id'
+        ]);
+
+
+        $post->tags()->sync($validatedData['tags']);
+
+        return response()->json([
+            'message' => 'Tags attached successfully',
+            'data' => $post->tags
+        ], 200);
+    }
+
+
     /**
      * Display the specified resource.
      */
