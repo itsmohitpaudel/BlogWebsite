@@ -62,12 +62,12 @@ class PostController extends Controller
 
     public function postWiseTags($id)
     {
-        $post = Post::where('id', $id)->first();
+        $post = Post::find($id);
 
         if (!$post) {
             return response()->json([
                 'message' => 'No Post Found',
-                'data' => []
+                'data' => null
             ], 200);
         }
 
@@ -80,13 +80,12 @@ class PostController extends Controller
 
     public function postWiseComments($id)
     {
-        $post = Post::where('id', $id)
-            ->first();
+        $post = Post::find($id);
 
         if (!$post) {
             return response()->json([
                 'message' => 'No Post Found',
-                'data' => []
+                'data' => null
             ], 200);
         }
 
@@ -97,6 +96,25 @@ class PostController extends Controller
                 ->with('user')
                 ->with('commentable')
                 ->get()
+        ], 200);
+    }
+
+    public function myPosts()
+    {
+        $post = Post::where('author_id', Auth::id())
+            ->with('category', 'author', 'comments', 'comments.user', 'tags')
+            ->get();
+
+        if ($post->isEmpty()) {
+            return response()->json([
+                'message' => 'No Post Found',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'My Posts retrieved successfully',
+            'data' => $post
         ], 200);
     }
 
