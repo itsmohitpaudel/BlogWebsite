@@ -25,6 +25,7 @@ class Post extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    // Using polymorphic relationship
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');

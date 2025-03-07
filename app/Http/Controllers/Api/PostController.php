@@ -16,10 +16,7 @@ class PostController extends Controller
     public function index()
     {
         $post = Post::latest()
-            ->with(
-                'category',
-                'author'
-            )
+            ->with('category', 'author', 'comments', 'comments.user', 'tags')
             ->get();
 
         if ($post->isEmpty()) {
@@ -114,7 +111,7 @@ class PostController extends Controller
     public function show($slug)
     {
         $post = Post::where('slug', $slug)
-            ->with('category', 'author')
+            ->with('category', 'author', 'comments', 'comments.user', 'tags')
             ->first();
 
 
@@ -130,7 +127,7 @@ class PostController extends Controller
         Gate::authorize('view', $post);
 
 
-        // Returns post
+        // Returns post with category, author and comments
         return response()->json([
             'message' => 'Post retrieved successfully',
             'data' => $post
