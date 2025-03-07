@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('comments', CommentController::class);
 
     // For Comments
-    Route::get('/posts/{id}/comments', [CommentController::class, 'index']);
+    Route::get('/posts/{id}/comments', [PostController::class, 'postWiseComments']);
     Route::post('/posts/{id}/comments', [CommentController::class, 'store']);
     Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
 
