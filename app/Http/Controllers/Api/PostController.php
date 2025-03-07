@@ -183,7 +183,9 @@ class PostController extends Controller
     public function update(Request $request, $slug)
     {
         // Finds post
-        $post = Post::where('slug', $slug)->first();
+        $post = Post::where('slug', $slug)
+            ->with('category', 'author', 'comments', 'comments.user', 'tags')
+            ->first();
 
         // If the post is not found
         if (!$post) {
@@ -206,10 +208,13 @@ class PostController extends Controller
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
             'category_id' => 'sometimes|required|exists:categories,id',
+            'tags' => 'sometimes|required|array',
+            'tags.*' => 'exists:tags,id',
             'status' => 'sometimes|required|in:published,draft'
         ]);
 
 
+        // Check if there are any data to update
         if (empty($validatedData)) {
             return response()->json([
                 'message' => 'No data given for update',
@@ -217,7 +222,18 @@ class PostController extends Controller
             ], 400);
         }
 
-        $post->update($validatedData);
+        $post->update([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'category_id' => $validatedData['category_id'],
+            'author_id' => $request->user()->id, //Ensures the logged-in user is the author
+            'status' => $validatedData['status']
+        ]);
+
+        // If tags are in the request, sync them
+        if (isset($validatedData['tags']) && !empty($validatedData['tags'])) {
+            $post->tags()->sync($validatedData['tags']);
+        }
 
         return response()->json([
             'message' => 'Post updated successfully',
