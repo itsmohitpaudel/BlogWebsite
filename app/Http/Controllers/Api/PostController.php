@@ -43,6 +43,8 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category_id' => 'required|exists:categories,id',
+            'tags' => 'required|array',
+            'tags.*' => 'exists:tags,id',
             'status' => 'required|in:published,draft'
         ]);
 
@@ -52,7 +54,7 @@ class PostController extends Controller
             'category_id' => $validatedData['category_id'],
             'author_id' => $request->user()->id, //Ensures the logged-in user is the author
             'status' => $validatedData['status']
-        ]);
+        ])->tags()->sync($validatedData['tags']);
 
         return response()->json([
             'message' => 'Post created successfully',
@@ -103,6 +105,7 @@ class PostController extends Controller
     {
         $post = Post::where('author_id', Auth::id())
             ->with('category', 'author', 'comments', 'comments.user', 'tags')
+            ->latest()
             ->get();
 
         if ($post->isEmpty()) {
