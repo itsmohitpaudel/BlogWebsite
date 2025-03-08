@@ -61,8 +61,8 @@ class PostController extends Controller
         $posts = QueryBuilder::for(Post::class)
             ->allowedFilters([
                 'title',  // Filtering posts by title
-                'category_id',  // Filtering posts by category ID (category relation)
-                'author_id',  // Filtering posts by author ID (author relation)
+                AllowedFilter::scope('category'), // Filter posts by category
+                AllowedFilter::scope('author'), // Filter posts by author
 
                 // Tags are store in different table
                 AllowedFilter::scope('tag'), // Filter posts by tag name
@@ -75,7 +75,7 @@ class PostController extends Controller
             return response()->json([
                 'message' => 'No posts found matching the search criteria.',
                 'data' => []
-            ], 200);
+            ], 404);
         }
 
         return response()->json([
