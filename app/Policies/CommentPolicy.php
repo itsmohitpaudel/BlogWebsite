@@ -51,7 +51,7 @@ class CommentPolicy
         // Post owner can delete comments on their post
         //Admins can delete any comment
         // Post owner can delete comments on their post
-        $isPostOwner = $comment->commentable_type === Post::class && $comment->commentable->user_id === $user->id;
+        $isPostOwner = $comment->commentable_type === Post::class && $comment->commentable->author_id === $user->id;
 
         // Users can delete their own comments
         $isCommentOwner = $user->id === $comment->user_id;
