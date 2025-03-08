@@ -38,6 +38,26 @@ Before you start, make sure you have the following installed:
     ```bash
     php artisan serve
     ```
+Database Seeding
+
+For initial testing, the following admin users are pre-seeded into the database. You can use these credentials to log in as an admin:
+```
+[
+    [
+        'name' => 'Ram',
+        'email' => 'ram@gmail.com',
+        'password' => Hash::make('ram@123'),
+        'role' => 'admin',
+    ],
+    [
+        'name' => 'Hari',
+        'email' => 'hari@gmail.com',
+        'password' => Hash::make('hari@123'),
+        'role' => 'admin',
+    ],
+]
+
+```
 
 ### Additional Information
 - Role-based access control is implemented with **Admin** and **Author** roles.
@@ -63,7 +83,9 @@ In this project,
 - Policies ensure that the users have the appropriate permission to access specific actions, based on their defined role.
 
 4. **Example of Gate Usage:**
-    `Gate::authorize('update-post', $post);`
+    ```
+   Gate::authorize('update-post', $post);
+    ```
 
 - This checks whether the currently authenticated user is allowed to update the post, based on their role (either Author or Admin).
 
@@ -80,12 +102,16 @@ To access the endpoints, users need to be authenticated using **Laravel Sanctum*
 
 1. **Login**:
     - URL:
-      `http://127.0.0.1:8000/api/login`
+      ```
+      http://127.0.0.1:8000/api/login
+      ```
     - Use this endpoint to authenticate and retrieve a token.
 
 2. **Logout**:
     - URL:
-      `http://127.0.0.1:8000/api/logout`
+      ```
+      http://127.0.0.1:8000/api/logout
+      ```
     - Use this endpoint to invalidate the token.
 
 ---
@@ -97,7 +123,9 @@ All routes below require the user to be authenticated with a valid token.
 
 **Logged in User:**
 - **GET**
-  `/api/user`  
+  ```
+  /api/user
+  ```  
   **Description**: Retrieve details of the currently authenticated user.
   - Response:
     - `200 OK`: Returns user data (name, email, etc.)
@@ -105,7 +133,9 @@ All routes below require the user to be authenticated with a valid token.
 
 **Logged in User Posts:**
 - **GET**
-  `/api/my-posts`  
+  ```
+  /api/my-posts
+  ```  
   **Description**: Get posts created by the currently authenticated user, including category, tags, and comments.
   - Response:
     - `200 OK`: List of posts created by the authenticated user.
@@ -117,14 +147,18 @@ All routes below require the user to be authenticated with a valid token.
 
 **Get Categories:**
 - **GET**
-  `/api/categories`  
+  ```
+  /api/categories
+  ```  
   **Description**: Get a list of all categories along with posts.
   - Response:
     - `200 OK`: List of categories with posts.
 
 **Create Category (Admin Only):**
 - **POST**
-  `/api/categories`  
+  ```
+  /api/categories
+  ```  
   **Description**: Create a new category.
   - Response:
     - `200 OK`: Returns the created category.
@@ -132,7 +166,9 @@ All routes below require the user to be authenticated with a valid token.
 
 **Update Category (Admin Only):**
 - **PATCH**
-  `/api/categories/category_slug`  
+  ```
+  /api/categories/category_slug
+  ```  
   **Description**: Update a category.
   - Response:
     - `201 Created`: Returns the updated category.
@@ -140,7 +176,9 @@ All routes below require the user to be authenticated with a valid token.
 
 **Delete Category (Admin Only):**
 - **DELETE**
-  `/api/categories/category_slug`  
+  ```
+  /api/categories/category_slug
+  ```  
   **Description**: Delete a category.
   - Response:
     - `200 Deleted`: Returns Successful Deletion Message.
@@ -150,27 +188,39 @@ All routes below require the user to be authenticated with a valid token.
 #### Posts Routes
 
 **Get All Posts:**
-- **GET** `/api/posts`  
+- **GET**
+  ```
+  /api/posts
+  ```  
   **Description**: Retrieve a list of all posts, including author, category, tags, and comments.
   - Response:
     - `200 OK`: List of posts.
 
 **Create Post (Author/Admin Only):**
-- **POST** `/api/posts`  
+- **POST**
+  ```
+  /api/posts
+  ```  
   **Description**: Create a new post.
   - Response:
     - `201 Created`: Returns the created post.
     - `403 Forbidden`: If the user is not an author or admin.
    
 **Update Post (Author can only update their post / Admin can update any post):**
-- **PATCH** `/api/posts/{post_slug}`  
+- **PATCH**
+  ```
+  /api/posts/{post_slug}
+  ```  
   **Description**: Update a post.
   - Response:
     - `201 Created`: Returns the created post.
     - `403 Forbidden`: If the user is not an author or admin.
 
 **Delete Post (Author can only delete their post / Admin can delete any post):**
-- **DELETE** `/api/posts/{post_slug}`  
+- **DELETE**
+- ```
+  /api/posts/{post_slug}
+  ```  
   **Description**: Delete a post.
   - Response:
     - `200 Okay`: Returns success message.
@@ -182,27 +232,38 @@ All routes below require the user to be authenticated with a valid token.
 
 **Logged in User Comments:**
 - **GET**
-  `/api/my-comments`  
+  ```
+  /api/my-comments
+  ```  
   **Description**: Get all comments made by the authenticated user.
   - Response:
     - `200 OK`: List of comments made by the user.
 
 **Get Comments:**
-- **GET** `/api/posts/{post_id}/comments`  
+- **GET**
+  ```
+  /api/posts/{post_id}/comments
+  ```  
   **Description**: Get all comments for a specific post.
   - Response:
     - `200 OK`: List of comments for the post.
     - `404 Not Found`: If the post is not found.
 
 **Post Comments:**
-- **POST** `/api/posts/{post_id}/comments`  
+- **POST**
+  ```
+  /api/posts/{post_id}/comments
+  ```  
   **Description**: Add a comment to a post.
   - Response:
     - `201 Created`: Returns the created comment.
     - `404 Not Found`: If the post is not found.
 
 **Update Comment:**
-- **PATCH** `/api/comments/{comment_id}`  
+- **PATCH**
+  ```
+  /api/comments/{comment_id}
+  ```  
   **Description**: Update a comment (only the comment owner can edit, and Admin can edit any comment).
   - Response:
     - `204 No Content`: Successfully edited the comment.
@@ -210,7 +271,10 @@ All routes below require the user to be authenticated with a valid token.
     - `404 Not Found`: If the comment is not found.
 
 **Delete Comment:**
-- **DELETE** `/api/comments/{comment_id}`  
+- **DELETE**
+  ```
+  /api/comments/{comment_id}
+  ```  
   **Description**: Delete a comment (only the comment owner or the post owner or Admin can delete any comment).
   - Response:
     - `204 No Content`: Successfully deleted the comment.
@@ -222,27 +286,39 @@ All routes below require the user to be authenticated with a valid token.
 #### Tags Routes
 
 **Get Tags (Admin Only): **
-- **GET** `/api/tags`  
+- **GET**
+  ```
+  /api/tags
+  ```  
   **Description**: Get all tags.
   - Response:
     - `200 OK`: List of tags with all the linked posts.
 
 **Post Tags (Admin Only):**
-- **POST** `/api/tags`  
+- **POST**
+  ```
+  /api/tags
+  ```  
   **Description**: Post tags.
   - Response:
     - `200 OK`: Returns the updated post with attached tags.
     - `404 Not Found`: If the post is not found.
 
 **Edit Tags (Admin Only):**
-- **PATCH** `/api/tags/tag_slug`  
+- **PATCH**
+  ```
+  /api/tags/tag_slug
+  ```  
   **Description**: Edit tags.
   - Response:
     - `200 OK`: Returns success message with edited tag details.
     - `404 Not Found`: If the tag is not found.
 
 **Delete Tags (Admin Only):**
-- **DELETE** `/api/tags/tag_slug`  
+- **DELETE**
+  ```
+  /api/tags/tag_slug
+  ```  
   **Description**: Delete tags.
   - Response:
     - `200 OK`: Returns successfully delete message.
@@ -255,7 +331,9 @@ All routes below require the user to be authenticated with a valid token.
 
 **Update User Role (Admin Only):**
 - **PATCH**
-  `/api/users/{id}/update-role`  
+  ```
+  /api/users/{id}/update-role
+  ```  
   **Description**: Update the role of a user (author).
   - Response:
     - `200 OK`: Returns the updated user.
@@ -266,12 +344,27 @@ All routes below require the user to be authenticated with a valid token.
 #### Search and Filter Route
 
 **Search and Filter Posts:**
-- **GET** `/api/search`  
+- **GET**
+  ```
+  /api/search
+  ```  
   **Description**: Search posts based on title, author, category, or tags.
-  - Query Parameters for search:
-    - Filter by title: `/api/search?filter[title]=post_title`
-    - Filter by author name: `/api/search?filter[author]=author_name`
-    - Filter by category name: `/api/search?filter[category]=category_name`
-    - Filter by tag name: `/api/search?filter[tag]=tag_name`
+  *Query Parameters for search:*
+  Filter by title:
+  ```
+  /api/search?filter[title]=post_title
+  ```
+  Filter by author name:
+  ```
+  /api/search?filter[author]=author_name
+  ```
+  Filter by category name:
+  ```
+  /api/search?filter[category]=category_name
+  ```
+  Filter by tag name:
+  ```
+  /api/search?filter[tag]=tag_name
+  ```
 
 ---
