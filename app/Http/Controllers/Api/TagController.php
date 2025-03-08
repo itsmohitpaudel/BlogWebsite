@@ -13,11 +13,11 @@ class TagController extends Controller
 {
     public function index()
     {
-        $tag = Tag::with('posts')
+        $tags = Tag::with('posts')
             ->latest()
             ->paginate(10);
 
-        if ($tag->isEmpty()) {
+        if ($tags->isEmpty()) {
             return response()->json([
                 'message' => 'No Tags Found',
                 'data' => []
@@ -26,7 +26,7 @@ class TagController extends Controller
 
         return response()->json([
             'message' => 'Tags retrieved successfully',
-            'data' => $tag
+            'data' => $tags
         ], 200);
     }
 
