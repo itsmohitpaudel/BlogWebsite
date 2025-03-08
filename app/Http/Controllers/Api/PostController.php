@@ -63,16 +63,12 @@ class PostController extends Controller
                 'title',  // Filtering posts by title
                 'category_id',  // Filtering posts by category ID (category relation)
                 'author_id',  // Filtering posts by author ID (author relation)
-                
+
                 // Tags are store in different table
-                AllowedFilter::callback('tags', function ($query, $value) {
-                    $query->whereHas('tags', function ($q) use ($value) {
-                        $q->where('tag_name', 'LIKE', "%{$value}%"); // Search in tag names
-                    });
-                }),
+                AllowedFilter::scope('tag'), // Filter posts by tag name
             ])
             ->with(['category', 'author', 'tags', 'comments.user'])  // Eager loading
-            ->get();
+            ->paginate(5);
 
         // Check if any posts were found
         if ($posts->isEmpty()) {
