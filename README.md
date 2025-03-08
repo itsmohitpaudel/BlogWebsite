@@ -161,6 +161,7 @@ All routes below require the user to be authenticated with a valid token.
     - `200 OK`: List of comments for the post.
     - `404 Not Found`: If the post is not found.
 
+**Post Comments:**
 - **POST** `/api/posts/{post_id}/comments`  
   **Description**: Add a comment to a post.
   - Response:
@@ -187,17 +188,33 @@ All routes below require the user to be authenticated with a valid token.
 
 #### Tags Routes
 
-**Post Tags:**
-- **GET** `/api/posts/{id}/tags`  
-  **Description**: Get all tags for a specific post.
+**Get Tags (Admin Only): **
+- **GET** `/api/tags`  
+  **Description**: Get all tags.
   - Response:
-    - `200 OK`: List of tags for the post.
+    - `200 OK`: List of tags with all the linked posts.
 
-- **POST** `/api/posts/{id}/tags`  
-  **Description**: Attach tags to a post.
+**Post Tags (Admin Only):**
+- **POST** `/api/tags`  
+  **Description**: Post tags.
   - Response:
     - `200 OK`: Returns the updated post with attached tags.
     - `404 Not Found`: If the post is not found.
+
+**Edit Tags (Admin Only):**
+- **PATCH** `/api/tags/tag_slug`  
+  **Description**: Edit tags.
+  - Response:
+    - `200 OK`: Returns success message with edited tag details.
+    - `404 Not Found`: If the tag is not found.
+
+**Delete Tags (Admin Only):**
+- **DELETE** `/api/tags/tag_slug`  
+  **Description**: Delete tags.
+  - Response:
+    - `200 OK`: Returns successfully delete message.
+    - `404 Not Found`: If the tag is not found.
+
 
 ---
 
