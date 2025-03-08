@@ -29,7 +29,7 @@ class PostController extends Controller
         // Per post pagination for comments: Tried but not used here in this case
         // This approach loads and paginates all comments for each post 
         //  Therefore, I fetched comments separately on api {"posts/post_id/comments"}
-        
+
         // $posts->getCollection()->transform(function ($post) use ($request) {
         //     $comments = $post->comments()
         //         ->with('user') // Eager load user for each comment
@@ -86,7 +86,7 @@ class PostController extends Controller
 
     public function postWiseTags($id)
     {
-        $post = Post::find($id);
+        $post = Post::with('tags')->find($id);
 
         if (!$post) {
             return response()->json([
@@ -98,7 +98,6 @@ class PostController extends Controller
         return response()->json([
             'message' => 'Post wise tags retrieved successfully',
             'post' => $post,
-            'data' => $post->tags()->get()
         ], 200);
     }
 
