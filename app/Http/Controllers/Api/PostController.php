@@ -296,6 +296,9 @@ class PostController extends Controller
             ], 403);
         }
 
+        // Delete related comments
+        $post->comments()->delete();
+
         // Delete the post
         $post->delete();
 
