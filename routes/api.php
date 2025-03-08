@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // For search
 
-    Route::get('/posts/search', [PostController::class, 'search']);
+    Route::get('/search', [PostController::class, 'search']);
 
     // For Comments
     Route::get('/posts/{id}/comments', [PostController::class, 'postWiseComments']);

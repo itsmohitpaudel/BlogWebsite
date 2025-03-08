@@ -13,7 +13,9 @@ class TagController extends Controller
 {
     public function index()
     {
-        $tag = Tag::latest()->get();
+        $tag = Tag::with('posts')
+            ->latest()
+            ->paginate(10);
 
         if ($tag->isEmpty()) {
             return response()->json([
