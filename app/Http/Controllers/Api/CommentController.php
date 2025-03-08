@@ -20,7 +20,8 @@ class CommentController extends Controller
         $comment = Comment::with(
             'user',
             'commentable'
-        )->paginate(10);
+        )->latest()
+            ->paginate(10);
 
         if ($comment->isEmpty()) {
             return response()->json([
@@ -70,7 +71,8 @@ class CommentController extends Controller
     public function show($id)
     {
         try {
-            $comment = Comment::with(['commentable', 'user'])->findOrFail($id);
+            $comment = Comment::with(['commentable', 'user'])
+                ->findOrFail($id);
             Gate::authorize('view', $comment);
 
             // Returns comment
