@@ -1,3 +1,42 @@
+## Blog API project
+
+## Set Up and Run the Application Locally
+
+### Prerequisites
+Before you start, make sure you have the following installed:
+- PHP (Recommended version: 8.x or higher)
+- Composer
+- MySQL
+- Node.js
+
+### Steps:
+1. Clone the repository:
+   git clone https://github.com/itsmohitpaudel/BlogWebsite.git
+
+2. Go inside the folder:
+   cd BlogWebsite
+
+3. Install dependencies:
+   composer install
+
+4. Set up the environment:
+   Copy .env.example to .env
+   Configure database in .env
+
+5. Run migrations and seeders:
+   php artisan migrate
+   php artisan db:seed
+   php artisan migrate:fresh --seed
+
+6. Start the development server:
+   php artisan serve
+
+## Additional Information
+1. Role-based access control is implemented: Admin and Author roles.
+2. Polymorphic relationships are used for comments and tags.
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
