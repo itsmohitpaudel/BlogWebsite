@@ -102,13 +102,6 @@ class CommentController extends Controller
             ->latest()
             ->paginate(10);
 
-        // if ($comments->isEmpty()) {
-        //     return response()->json([
-        //         'message' => 'No Comment Found',
-        //         'data' => []
-        //     ], 200);
-        // }
-
         return response()->json([
             'message' => $comments->isEmpty() ? 'No Comments Found' : 'My Comments retrieved successfully',
             'data' => $comments
