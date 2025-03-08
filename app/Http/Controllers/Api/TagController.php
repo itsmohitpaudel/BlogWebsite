@@ -92,32 +92,6 @@ class TagController extends Controller
         ], 200);
     }
 
-    public function attachTags(Request $request, $id)
-    {
-        $post = Post::where('id', $id)
-            ->first();
-
-        if (!$post) {
-            return response()->json([
-                'message' => 'Post not found',
-                'data' => null
-            ], 404);
-        }
-
-        $validatedData = $request->validate([
-            'tags' => 'required|array',
-            'tags.*' => 'exists:tags,id'
-        ]);
-
-
-        $post->tags()->sync($validatedData['tags']);
-
-        return response()->json([
-            'message' => 'Tags attached successfully',
-            'data' => $post->tags
-        ], 200);
-    }
-
     /**
      * Update the specified resource in storage.
      */
