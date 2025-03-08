@@ -1,0 +1,45 @@
+## API Documentation for Blog API
+
+## Base URL
+
+The base URL for the API is:
+
+http://127.0.0.1:8000/api
+
+#### Authentication
+To access the endpoints, users need to be authenticated using Laravel Sanctum.
+
+Login: Use the /login endpoint to authenticate and retrieve a token.
+Logout: Use the /logout endpoint to invalidate the token.
+
+Routes and Endpoints
+All routes below require the user to be authenticated with a valid token.
+
+User Routes
+1. GET /user
+Description: Retrieve details of the currently authenticated user.
+
+Response:
+200 OK: Returns user data (name, email, etc.).
+401 Unauthorized: If the user is not authenticated.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
