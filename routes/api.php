@@ -36,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/posts/{id}/comments', [PostController::class, 'postWiseComments']);
     Route::post('/posts/{id}/comments', [CommentController::class, 'store']);
     Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
+    Route::get('/my-comments', [CommentController::class, 'myComments']);
+
 
     // For Post wise Tags
     Route::get('/posts/{id}/tags', [PostController::class, 'postWiseTags']);
