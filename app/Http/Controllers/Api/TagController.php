@@ -74,7 +74,13 @@ class TagController extends Controller
      */
     public function show($slug)
     {
-        $tag = Tag::where('tag_slug', $slug)->first();
+        $tag = Tag::where('tag_slug', $slug)
+            ->with([
+                'posts' => function ($query) {
+                    $query->paginate(5);
+                }
+            ])
+            ->first();
 
         // Checks if the tag exists
         if (!$tag) {
