@@ -161,8 +161,12 @@ Response:
 
 ### Query Parameters for search:
 1. title: Filter posts by title.
-2. author: Filter posts by author name.
-3. category: Filter posts by category name.
-4. tags: Filter posts by tag name.
+   api/search?filter[title]=post_title
+3. author: Filter posts by author name.
+   api/search?filter[author]=author_name
+5. category: Filter posts by category name.
+   api/search?filter[category]=category_name
+7. tags: Filter posts by tag name.
+   api/search?filter[tag]=tag_name
 
 
