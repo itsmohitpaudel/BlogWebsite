@@ -16,7 +16,13 @@ class PostController extends Controller
     public function index()
     {
         $post = Post::latest()
-            ->with('category', 'author', 'comments', 'comments.user', 'tags')
+            ->with(
+                'category',
+                'author',
+                'tags',
+                'comments',
+                'comments.user',
+            )
             ->get();
 
         if ($post->isEmpty()) {
@@ -82,7 +88,8 @@ class PostController extends Controller
 
     public function postWiseComments($id)
     {
-        $post = Post::find($id);
+        // Get post along with comments & users
+        $post = Post::with(['comments.user'])->find($id);
 
         if (!$post) {
             return response()->json([
@@ -92,19 +99,22 @@ class PostController extends Controller
         }
 
         return response()->json([
-            'message' => 'Post wise comments retrieved successfully',
-            'post' => $post,
-            'data' => $post->comments()
-                ->with('user')
-                ->with('commentable')
-                ->get()
+            'message' => 'Post-wise comments retrieved successfully',
+            // 'post' => $post,
+            'data' => $post
         ], 200);
     }
 
     public function myPosts()
     {
         $post = Post::where('author_id', Auth::id())
-            ->with('category', 'author', 'comments', 'comments.user', 'tags')
+            ->with(
+                'category',
+                'author',
+                'tags',
+                'comments',
+                'comments.user',
+            )
             ->latest()
             ->get();
 

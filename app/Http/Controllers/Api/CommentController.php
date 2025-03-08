@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -67,26 +68,29 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        $comment = Comment::where('id', $id)
-            ->with('commentable')
-            ->first();
+        try {
+            $comment = Comment::with(['commentable', 'user'])->findOrFail($id);
+            Gate::authorize('view', $comment);
 
-        // Checks if the comment exists
-        if (!$comment) {
+            // Returns comment
+            return response()->json([
+                'message' => 'Comment retrieved successfully',
+                'data' => $comment
+            ], 200);
+        }
+        // Checks if comment exists
+        catch (ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Comment not found',
                 'data' => null
             ], 404);
+        } catch (\Exception $e) {
+            // Handle unexpected errors
+            return response()->json([
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        // Checks authorization
-        Gate::authorize('view', $comment);
-
-        // Returns comment
-        return response()->json([
-            'message' => 'Comment retrieved successfully',
-            'data' => $comment
-        ], 200);
     }
 
     public function myComments()
