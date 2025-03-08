@@ -88,8 +88,8 @@ class PostController extends Controller
 
     public function postWiseComments($id)
     {
-        // Get post along with comments & users
-        $post = Post::with(['comments.user'])->find($id);
+        // Get post along with users
+        $post = Post::with('author')->find($id);
 
         if (!$post) {
             return response()->json([
@@ -98,10 +98,16 @@ class PostController extends Controller
             ], 200);
         }
 
+        // Paginate the comments to avoid loading too many at once
+        $comments = $post->comments()
+            ->with('user')
+            ->latest()
+            ->paginate(5);
+
         return response()->json([
             'message' => 'Post-wise comments retrieved successfully',
-            // 'post' => $post,
-            'data' => $post
+            'post' => $post,
+            'data' => $comments
         ], 200);
     }
 
@@ -110,13 +116,13 @@ class PostController extends Controller
         $post = Post::where('author_id', Auth::id())
             ->with(
                 'category',
-                'author',
+                // 'author',
                 'tags',
                 'comments',
                 'comments.user',
             )
             ->latest()
-            ->get();
+            ->paginate(5);
 
         if ($post->isEmpty()) {
             return response()->json([
