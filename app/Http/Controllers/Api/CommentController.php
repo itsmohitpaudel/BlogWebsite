@@ -65,9 +65,50 @@ class CommentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $comment = Comment::where('id', $id)
+            ->with('commentable')
+            ->first();
+
+        // Checks if the comment exists
+        if (!$comment) {
+            return response()->json([
+                'message' => 'Comment not found',
+                'data' => null
+            ], 404);
+        }
+
+        // Checks authorization
+        Gate::authorize('view', $comment);
+
+        // Returns comment
+        return response()->json([
+            'message' => 'Comment retrieved successfully',
+            'data' => $comment
+        ], 200);
+    }
+
+    public function myComments()
+    {
+        $comment = Comment::where('user_id', Auth::id())
+            ->with(
+                'commentable',
+            )
+            ->latest()
+            ->get();
+
+        if ($comment->isEmpty()) {
+            return response()->json([
+                'message' => 'No Comment Found',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'My Comments retrieved successfully',
+            'data' => $comment
+        ], 200);
     }
 
     /**
