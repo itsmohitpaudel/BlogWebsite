@@ -211,7 +211,7 @@ All routes below require the user to be authenticated with a valid token.
 
 **Delete Comment:**
 - **DELETE** `/api/comments/{comment_id}`  
-  **Description**: Delete a comment (only the comment owner or the post owner can delete or Admin can delete any comment).
+  **Description**: Delete a comment (only the comment owner or the post owner or Admin can delete any comment).
   - Response:
     - `204 No Content`: Successfully deleted the comment.
     - `403 Forbidden`: If the user does not own the comment.
