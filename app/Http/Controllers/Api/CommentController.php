@@ -19,7 +19,7 @@ class CommentController extends Controller
     {
         $comment = Comment::with(
             'commentable'
-        )->get();
+        )->paginate(10);
 
         if ($comment->isEmpty()) {
             return response()->json([
@@ -95,23 +95,16 @@ class CommentController extends Controller
 
     public function myComments()
     {
-        $comment = Comment::where('user_id', Auth::id())
+        $comments = Comment::where('user_id', Auth::id())
             ->with(
                 'commentable',
             )
             ->latest()
-            ->get();
-
-        if ($comment->isEmpty()) {
-            return response()->json([
-                'message' => 'No Comment Found',
-                'data' => []
-            ], 200);
-        }
+            ->paginate(10);
 
         return response()->json([
-            'message' => 'My Comments retrieved successfully',
-            'data' => $comment
+            'message' => $comments->isEmpty() ? 'No Comments Found' : 'My Comments retrieved successfully',
+            'data' => $comments
         ], 200);
     }
 

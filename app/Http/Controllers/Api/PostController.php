@@ -15,17 +15,33 @@ class PostController extends Controller
      */
     public function index()
     {
-        $post = Post::latest()
-            ->with(
+        $posts = Post::latest()
+            ->with([
                 'category',
                 'author',
                 'tags',
-                'comments',
-                'comments.user',
-            )
-            ->get();
+                'comments.user' => function ($query) {
+                    $query->paginate(5);
+                },
+            ])
+            ->paginate(10);
 
-        if ($post->isEmpty()) {
+        // Per post pagination for comments: Tried but not used here in this case
+        // This approach loads and paginates all comments for each post 
+        //  Therefore, I fetched comments separately on api {"posts/post_id/comments"}
+        
+        // $posts->getCollection()->transform(function ($post) use ($request) {
+        //     $comments = $post->comments()
+        //         ->with('user') // Eager load user for each comment
+        //         ->latest()
+        //         ->paginate(5, ['*'], 'comment_page') // Separate pagination for comments
+        //         ->appends($request->query()); // Maintain query parameters
+
+        //     $post->comments = $comments;
+        //     return $post;
+        // });
+
+        if ($posts->isEmpty()) {
             return response()->json([
                 'message' => 'No Posts Found',
                 'data' => []
@@ -34,7 +50,7 @@ class PostController extends Controller
 
         return response()->json([
             'message' => 'Posts retrieved successfully',
-            'data' => $post
+            'data' => $posts
         ], 200);
     }
 
@@ -88,8 +104,8 @@ class PostController extends Controller
 
     public function postWiseComments($id)
     {
-        // Get post along with comments & users
-        $post = Post::with(['comments.user'])->find($id);
+        // Get post along with Post author
+        $post = Post::with('author')->find($id);
 
         if (!$post) {
             return response()->json([
@@ -98,10 +114,16 @@ class PostController extends Controller
             ], 200);
         }
 
+        // Paginate the comments to control loading all comments at once
+        $comments = $post->comments()
+            ->with('user')
+            ->latest()
+            ->paginate(5);
+
         return response()->json([
             'message' => 'Post-wise comments retrieved successfully',
-            // 'post' => $post,
-            'data' => $post
+            'post' => $post,
+            'data' => $comments
         ], 200);
     }
 
@@ -110,13 +132,13 @@ class PostController extends Controller
         $post = Post::where('author_id', Auth::id())
             ->with(
                 'category',
-                'author',
+                // 'author',
                 'tags',
                 'comments',
                 'comments.user',
             )
             ->latest()
-            ->get();
+            ->paginate(5);
 
         if ($post->isEmpty()) {
             return response()->json([
