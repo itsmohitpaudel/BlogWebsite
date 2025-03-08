@@ -7,6 +7,8 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PostController extends Controller
 {
@@ -53,6 +55,39 @@ class PostController extends Controller
             'data' => $posts
         ], 200);
     }
+
+    public function search(Request $request)
+    {
+        $posts = QueryBuilder::for(Post::class)
+            ->allowedFilters([
+                'title',  // Filtering posts by title
+                'category_id',  // Filtering posts by category ID (category relation)
+                'author_id',  // Filtering posts by author ID (author relation)
+                
+                // Tags are store in different table
+                AllowedFilter::callback('tags', function ($query, $value) {
+                    $query->whereHas('tags', function ($q) use ($value) {
+                        $q->where('tag_name', 'LIKE', "%{$value}%"); // Search in tag names
+                    });
+                }),
+            ])
+            ->with(['category', 'author', 'tags', 'comments.user'])  // Eager loading
+            ->get();
+
+        // Check if any posts were found
+        if ($posts->isEmpty()) {
+            return response()->json([
+                'message' => 'No posts found matching the search criteria.',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Posts retrieved successfully',
+            'data' => $posts
+        ], 200);
+    }
+
 
     /**
      * Store a newly created resource in storage.
