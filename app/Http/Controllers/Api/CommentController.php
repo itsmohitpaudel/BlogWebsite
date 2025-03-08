@@ -71,8 +71,9 @@ class CommentController extends Controller
     public function show($id)
     {
         try {
-            $comment = Comment::with(['commentable', 'user'])
+            $comment = Comment::with(['commentable.author', 'user'])
                 ->findOrFail($id);
+
             Gate::authorize('view', $comment);
 
             // Returns comment
