@@ -18,6 +18,7 @@ class CommentController extends Controller
     public function index()
     {
         $comment = Comment::with(
+            'user',
             'commentable'
         )->paginate(10);
 
