@@ -160,13 +160,13 @@ Response:
     Description: Search posts based on title, author, category, or tags.
 
 ### Query Parameters for search:
-1. title: Filter posts by title.
+1. Filter posts by title:
    api/search?filter[title]=post_title
-3. author: Filter posts by author name.
+3. Filter posts by author name:
    api/search?filter[author]=author_name
-5. category: Filter posts by category name.
+5. Filter posts by category name:
    api/search?filter[category]=category_name
-7. tags: Filter posts by tag name.
+7. Filter posts by tag name:
    api/search?filter[tag]=tag_name
 
 
