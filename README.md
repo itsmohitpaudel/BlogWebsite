@@ -36,70 +36,149 @@ Before you start, make sure you have the following installed:
 2. Polymorphic relationships are used for comments and tags.
 
 
+## API Documentation for Blog API
 
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Base URL
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+The base URL for the API is:
 
-## About Laravel
+http://127.0.0.1:8000/api
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+#### Authentication
+To access the endpoints, users need to be authenticated using Laravel Sanctum.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Login: Use the /login endpoint to authenticate and retrieve a token.
+Logout: Use the /logout endpoint to invalidate the token.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Routes and Endpoints
+All routes below require the user to be authenticated with a valid token.
 
-## Learning Laravel
+User Routes
+1. GET api/user
+Description: Retrieve details of the currently authenticated user.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Response:
+200 OK: Returns user data (name, email, etc.).
+401 Unauthorized: If the user is not authenticated.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Response:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+{
+    "message": "User is logged in",
+    "user": {
+        "id": 1,
+        "name": "admin",
+        "email": "admin@gmail.com",
+        "email_verified_at": null,
+        "role": "admin",
+        "created_at": null,
+        "updated_at": null
+    }
+}
 
-## Laravel Sponsors
+2. GET api/my-posts
+Description: Get posts created by the currently authenticated user along with category, tags, comments.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Response:
+200 OK: List of posts created by the authenticated user.
+401 Unauthorized: If the user is not authenticated.
 
-### Premium Partners
+Categories Routes
+3. GET api/categories
+Description: Get a list of all categories along with posts.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Response:
+200 OK: List of categories.
 
-## Contributing
+This gets all the categories along with the posts belonging to that category.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+4. POST api/categories
+Description: Create a new category (Admin only).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Response:
+201 Created: Returns the created category.
+403 Forbidden: If the user is not an admin.
 
-## Security Vulnerabilities
+POST /api/categories
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+This post creates a new category and returns the newly created category.
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Posts Routes
+5. GET api/posts
+
+Description: Retrieve a list of all posts with author, category, tags, and comments.
+
+Response:
+200 OK: List of posts.
+
+6. POST /posts
+Description: Create a new post (Author and Admin only).
+
+Response:
+201 Created: Returns the created post.
+403 Forbidden: If the user is not an author or an admin
+
+7. GET /posts/{id}/comments
+Description: Get all comments for a specific post.
+
+Response:
+200 OK: List of comments for the post.
+404 Not Found: If the post is not found.
+
+8. POST /posts/{id}/comments
+Description: Add a comment to a post.
+
+Response:
+201 Created: Returns the created comment.
+404 Not Found: If the post is not found.
+
+9. DELETE /comments/{id}
+Description: Delete a comment (Only the comment owner or the post owner can delete).
+
+Response:
+204 No Content: Successfully deleted the comment.
+403 Forbidden: If the user does not own the comment.
+404 Not Found: If the comment is not found.
+
+Tags Routes
+10. GET /posts/{id}/tags
+Description: Get all tags for a specific post.
+
+Response:
+200 OK: Gets all tags for the post.
+
+11. POST /posts/{id}/tags
+Description: Attach tags to a specific post.
+
+Response:
+200 OK: Returns the updated post with attached tags.
+404 Not Found: If the post is not found.
+
+Comments Routes
+12. GET /my-comments
+Description: Get all comments made by the authenticated user.
+
+Response:
+200 OK: List of comments made by the user.
+
+Admin Only Routes
+13. PATCH /users/{id}/update-role
+Description: Update the role of a author (Admin only).
+
+Response:
+200 OK: Returns the updated user.
+403 Forbidden: If the user is not an admin.
+
+Search Route
+14. GET /search
+Description: Search posts based on title, author, category, or tags.
+
+Query Parameters:
+title: Filter posts by title.
+author: Filter posts by author name.
+category: Filter posts by category name.
+tags: Filter posts by tag name.
+
+
