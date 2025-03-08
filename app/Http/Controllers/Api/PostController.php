@@ -88,7 +88,7 @@ class PostController extends Controller
 
     public function postWiseComments($id)
     {
-        // Get post along with users
+        // Get post along with Post author
         $post = Post::with('author')->find($id);
 
         if (!$post) {
@@ -98,7 +98,7 @@ class PostController extends Controller
             ], 200);
         }
 
-        // Paginate the comments to avoid loading too many at once
+        // Paginate the comments to control loading all comments at once
         $comments = $post->comments()
             ->with('user')
             ->latest()
