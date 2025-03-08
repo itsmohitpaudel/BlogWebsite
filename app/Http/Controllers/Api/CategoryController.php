@@ -74,7 +74,7 @@ class CategoryController extends Controller
     public function show($slug)
     {
         $category = Category::where('category_slug', $slug)
-            ->with('posts')
+            ->with(['posts'])
             ->first();
 
         // Checks if the category exists
