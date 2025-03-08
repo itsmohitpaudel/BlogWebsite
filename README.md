@@ -1,8 +1,20 @@
-# Blog API Project
+# Laravel RESTful API - Blog System
+
+This is a RESTful API built with Laravel, enabling users to manage posts, categories, tags, and comments with role-based access control.
+
+Features
+- User authentication via Laravel Sanctum
+- Role-Based Access Control (RBAC) for Admins & Authors
+- Polymorphic relationships for comments and tags
+- Search & Filtering using Laravel Query Builder
+- Pagination for optimized performance
+- Input validation & structured error handling
+
+---
 
 ## Set Up and Run the Application Locally
 
-### Prerequisites
+### Prerequisites:
 Before you start, make sure you have the following installed:
 - PHP (Recommended version: 8.x or higher)
 - Composer
@@ -58,6 +70,15 @@ For initial testing, the following admin users are pre-seeded into the database.
 ]
 
 ```
+
+### Authentication ###
+
+- This API uses Laravel Sanctum for authentication.
+- Include the token in the Authorization header:
+
+``
+Authorization: Bearer your_token_here
+``
 
 ### Additional Information
 - Role-based access control is implemented with **Admin** and **Author** roles.
