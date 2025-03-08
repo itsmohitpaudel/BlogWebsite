@@ -22,6 +22,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 //     return Auth::user();
 // });
 
+Route::get('/', function () {
+    return response()->json([
+        'message' => 'Welcome to the Blog API!',
+        'status' => 'API is running successfully',
+        'version' => 'v1',
+    ]);
+});
+
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'LoggedInUser']);
