@@ -19,7 +19,7 @@ class CommentController extends Controller
     {
         $comment = Comment::with(
             'commentable'
-        )->get();
+        )->paginate(10);
 
         if ($comment->isEmpty()) {
             return response()->json([

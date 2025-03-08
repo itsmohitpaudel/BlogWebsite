@@ -15,17 +15,33 @@ class PostController extends Controller
      */
     public function index()
     {
-        $post = Post::latest()
-            ->with(
+        $posts = Post::latest()
+            ->with([
                 'category',
                 'author',
                 'tags',
-                'comments',
-                'comments.user',
-            )
-            ->get();
+                'comments.user' => function ($query) {
+                    $query->paginate(5);
+                },
+            ])
+            ->paginate(10);
 
-        if ($post->isEmpty()) {
+        // Per post pagination for comments: Tried but not used here in this case
+        // This approach loads and paginates all comments for each post 
+        //  Therefore, I fetched comments separately on api {"posts/post_id/comments"}
+        
+        // $posts->getCollection()->transform(function ($post) use ($request) {
+        //     $comments = $post->comments()
+        //         ->with('user') // Eager load user for each comment
+        //         ->latest()
+        //         ->paginate(5, ['*'], 'comment_page') // Separate pagination for comments
+        //         ->appends($request->query()); // Maintain query parameters
+
+        //     $post->comments = $comments;
+        //     return $post;
+        // });
+
+        if ($posts->isEmpty()) {
             return response()->json([
                 'message' => 'No Posts Found',
                 'data' => []
@@ -34,7 +50,7 @@ class PostController extends Controller
 
         return response()->json([
             'message' => 'Posts retrieved successfully',
-            'data' => $post
+            'data' => $posts
         ], 200);
     }
 
