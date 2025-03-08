@@ -104,7 +104,8 @@ class PostController extends Controller
     public function postWiseComments($id)
     {
         // Get post along with Post author
-        $post = Post::with('author')->find($id);
+        $post = Post::with('author')
+            ->find($id);
 
         if (!$post) {
             return response()->json([
