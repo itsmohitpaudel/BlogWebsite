@@ -46,6 +46,28 @@ Before you start, make sure you have the following installed:
 
 ---
 
+## Role-Based Authorization Using Gates
+In this project, 
+- Role-based access control (RBAC) is implemented using Gates to manage user permissions for different operations.
+- The Admin and Author roles are the primary users with different levels of access to the resources in the blog API.
+
+1. **Gates for Authorization**
+- I have used Laravel's Gate functionality to define custom authorization logic that checks a user's role before allowing them to perform certain actions.
+- This ensures that only users with the appropriate role (Admin or Author) can access certain endpoints.
+
+2. **Roles**
+- Admin: Admin users have higher privileges and can manage categories, tags, posts, and users. They can perform actions like creating, updating, or deleting categories,     posts, and tags, and modifying user roles.
+- Author: Users with the Author role are allowed to create and update their own posts, as well as post comments. They do not have access to admin functionalities like managing other users or categories.
+
+3. **Authorization Logic:**
+- Policies ensure that the users have the appropriate permission to access specific actions, based on their defined role.
+
+4. **Example of Gate Usage:**
+    `Gate::authorize('update-post', $post);`
+
+- This checks whether the currently authenticated user is allowed to update the post, based on their role (either Author or Admin).
+
+
 ## API Documentation for Blog API
 
 ### Base URL
@@ -93,7 +115,7 @@ All routes below require the user to be authenticated with a valid token.
 
 #### Categories Routes
 
-**Categories:**
+**Get Categories:**
 - **GET**
   `/api/categories`  
   **Description**: Get a list of all categories along with posts.
@@ -121,13 +143,13 @@ All routes below require the user to be authenticated with a valid token.
   `/api/categories/category_slug`  
   **Description**: Delete a category.
   - Response:
-    - `200 Deleted`: Returns Successfull Deletion Message.
+    - `200 Deleted`: Returns Successful Deletion Message.
     - `403 Forbidden`: If the user is not an admin.
 ---
 
 #### Posts Routes
 
-**All Posts:**
+**Get All Posts:**
 - **GET** `/api/posts`  
   **Description**: Retrieve a list of all posts, including author, category, tags, and comments.
   - Response:
@@ -153,6 +175,17 @@ All routes below require the user to be authenticated with a valid token.
   - Response:
     - `200 Okay`: Returns success message.
     - `403 Forbidden`: If the user is not an author or admin.
+
+---
+
+#### Comments Routes
+
+**Logged in User Comments:**
+- **GET**
+  `/api/my-comments`  
+  **Description**: Get all comments made by the authenticated user.
+  - Response:
+    - `200 OK`: List of comments made by the user.
 
 **Get Comments:**
 - **GET** `/api/posts/{post_id}/comments`  
@@ -218,18 +251,7 @@ All routes below require the user to be authenticated with a valid token.
 
 ---
 
-#### Comments Routes
-
-**User Comments:**
-- **GET**
-  `/api/my-comments`  
-  **Description**: Get all comments made by the authenticated user.
-  - Response:
-    - `200 OK`: List of comments made by the user.
-
----
-
-#### Admin Only Routes
+#### Role Routes
 
 **Update User Role (Admin Only):**
 - **PATCH**
