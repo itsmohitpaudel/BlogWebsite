@@ -25,6 +25,13 @@ class Post extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    public function scopeTag($query, $tagName)
+    {
+        return $query->whereHas('tags', function ($query) use ($tagName) {
+            $query->where('tag_name', 'like', '%' . $tagName . '%');
+        });
+    }
+
     // Using polymorphic relationship
     public function comments()
     {
