@@ -263,9 +263,9 @@ All routes below require the user to be authenticated with a valid token.
 
 ---
 
-#### Search Route
+#### Search and Filter Route
 
-**Search Posts:**
+**Search and Filter Posts:**
 - **GET** `/api/search`  
   **Description**: Search posts based on title, author, category, or tags.
   - Query Parameters for search:
