@@ -42,6 +42,7 @@ Before you start, make sure you have the following installed:
 ### Additional Information
 - Role-based access control is implemented with **Admin** and **Author** roles.
 - Polymorphic relationships are used for **comments** and **tags**.
+- All users registering within the application are assigned the author role by default.
 
 ---
 
