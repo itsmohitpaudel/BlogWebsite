@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Comment;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -46,8 +47,19 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        // Users can only delete their own comments, while admins can delete any comment
-        return $user->id === $comment->user_id || $user->role === 'admin';
+        // Users can only delete their own comments
+        // Post owner can delete comments on their post
+        //Admins can delete any comment
+        // Post owner can delete comments on their post
+        $isPostOwner = $comment->commentable_type === Post::class && $comment->commentable->user_id === $user->id;
+
+        // Users can delete their own comments
+        $isCommentOwner = $user->id === $comment->user_id;
+
+        // Admins can delete any comment
+        $isAdmin = $user->role === 'admin';
+
+        return $isPostOwner || $isCommentOwner || $isAdmin;
     }
 
     /**
