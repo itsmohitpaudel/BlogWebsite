@@ -1,4 +1,4 @@
-## Blog API project
+# Blog API Project
 
 ## Set Up and Run the Application Locally
 
@@ -11,169 +11,227 @@ Before you start, make sure you have the following installed:
 
 ### Steps:
 1. Clone the repository:
-   git clone https://github.com/itsmohitpaudel/BlogWebsite.git
+    ```bash
+    git clone https://github.com/itsmohitpaudel/BlogWebsite.git
+    ```
 
-2. Go inside the folder:
-   cd BlogWebsite
+2. Go inside the project folder:
+    ```bash
+    cd BlogWebsite
+    ```
 
 3. Install dependencies:
-   composer install
+    ```bash
+    composer install
+    ```
 
 4. Set up the environment:
-   Copy .env.example to .env
-   Configure database in .env
+    - Copy `.env.example` to `.env`
+    - Configure the database in `.env`
 
 5. Run migrations and seeders:
+    ```bash
     php artisan migrate:fresh --seed
+    ```
 
-7. Start the development server:
-   php artisan serve
+6. Start the development server:
+    ```bash
+    php artisan serve
+    ```
 
-## Additional Information
-1. Role-based access control is implemented: Admin and Author roles.
-2. Polymorphic relationships are used for comments and tags.
+### Additional Information
+- Role-based access control is implemented with **Admin** and **Author** roles.
+- Polymorphic relationships are used for **comments** and **tags**.
 
+---
 
 ## API Documentation for Blog API
 
-## Base URL
-
+### Base URL
 The base URL for the API is:
 
     http://127.0.0.1:8000/api
 
 #### Authentication
-To access the endpoints, users need to be authenticated using Laravel Sanctum.
+To access the endpoints, users need to be authenticated using **Laravel Sanctum**.
 
-1. Login
-   http://127.0.0.1:8000/api/login
-   Use the /login endpoint to authenticate and retrieve a token.
-3. Logout:
-4.     http://127.0.0.1:8000/api/login
-5. Use the /logout endpoint to invalidate the token.
+1. **Login**:
+    - URL:
+      `http://127.0.0.1:8000/api/login`
+    - Use this endpoint to authenticate and retrieve a token.
+
+2. **Logout**:
+    - URL:
+      `http://127.0.0.1:8000/api/logout`
+    - Use this endpoint to invalidate the token.
+
+---
 
 ### Routes and Endpoints
 All routes below require the user to be authenticated with a valid token.
 
-### User Routes
+#### User Routes
 
-## Logged in User
-1.     GET api/user
-   Description: Retrieve details of the currently authenticated user.
+**Logged in User:**
+- **GET**
+  `/api/user`  
+  **Description**: Retrieve details of the currently authenticated user.
+  - Response:
+    - `200 OK`: Returns user data (name, email, etc.)
+    - `401 Unauthorized`: If the user is not authenticated.
 
-### Response:
-200 OK: Returns user data (name, email, etc.).
-401 Unauthorized: If the user is not authenticated.
+**Logged in User Posts:**
+- **GET**
+  `/api/my-posts`  
+  **Description**: Get posts created by the currently authenticated user, including category, tags, and comments.
+  - Response:
+    - `200 OK`: List of posts created by the authenticated user.
+    - `401 Unauthorized`: If the user is not authenticated.
 
-### Logged in User Posts
-2.     GET api/my-posts
-   Description: Get posts created by the currently authenticated user along with category, tags, comments.
+---
 
-### Response:
-200 OK: List of posts created by the authenticated user.
-401 Unauthorized: If the user is not authenticated.
+#### Categories Routes
 
-### Categories Routes
-3.     GET api/categories
-   Description: Get a list of all categories along with posts.
+**Categories:**
+- **GET**
+  `/api/categories`  
+  **Description**: Get a list of all categories along with posts.
+  - Response:
+    - `200 OK`: List of categories with posts.
 
-### Response:
-200 OK: List of categories.
+**Create Category (Admin Only):**
+- **POST**
+  `/api/categories`  
+  **Description**: Create a new category.
+  - Response:
+    - `200 OK`: Returns the created category.
+    - `403 Forbidden`: If the user is not an admin.
 
-This gets all the categories along with the posts belonging to that category.
+**Update Category (Admin Only):**
+- **PATCH**
+  `/api/categories/category_slug`  
+  **Description**: Update a category.
+  - Response:
+    - `201 Created`: Returns the updated category.
+    - `403 Forbidden`: If the user is not an admin.
 
-### Gets All Categories
-4. Method: GET
-5.     api/categories
+**Delete Category (Admin Only):**
+- **DELETE**
+  `/api/categories/category_slug`  
+  **Description**: Delete a category.
+  - Response:
+    - `200 Deleted`: Returns Successfull Deletion Message.
+    - `403 Forbidden`: If the user is not an admin.
+---
 
-### Response:
-201 Created: Returns the created category.
-403 Forbidden: If the user is not an admin.
+#### Posts Routes
 
-### Posts Categories
-### Method: POST
-5.     POST /api/categories
-   Description: This post creates a new category and returns the newly created category.
+**All Posts:**
+- **GET** `/api/posts`  
+  **Description**: Retrieve a list of all posts, including author, category, tags, and comments.
+  - Response:
+    - `200 OK`: List of posts.
 
-### For POST Routes
-### Method: GET
-5.     api/posts
-   Description: Retrieve a list of all posts with author, category, tags, and comments.
+**Create Post (Author/Admin Only):**
+- **POST** `/api/posts`  
+  **Description**: Create a new post.
+  - Response:
+    - `201 Created`: Returns the created post.
+    - `403 Forbidden`: If the user is not an author or admin.
+   
+**Update Post (Author can only update their post / Admin can update any post):**
+- **PATCH** `/api/posts/{post_slug}`  
+  **Description**: Update a post.
+  - Response:
+    - `201 Created`: Returns the created post.
+    - `403 Forbidden`: If the user is not an author or admin.
 
-Response:
-200 OK: List of posts.
+**Delete Post (Author can only delete their post / Admin can delete any post):**
+- **DELETE** `/api/posts/{post_slug}`  
+  **Description**: Delete a post.
+  - Response:
+    - `200 Okay`: Returns success message.
+    - `403 Forbidden`: If the user is not an author or admin.
 
-### Method: POST
-6.     api/posts
-   Description: Create a new post (Author and Admin only).
+**Get Comments:**
+- **GET** `/api/posts/{post_id}/comments`  
+  **Description**: Get all comments for a specific post.
+  - Response:
+    - `200 OK`: List of comments for the post.
+    - `404 Not Found`: If the post is not found.
 
-Response:
-201 Created: Returns the created post.
-403 Forbidden: If the user is not an author or an admin
+- **POST** `/api/posts/{post_id}/comments`  
+  **Description**: Add a comment to a post.
+  - Response:
+    - `201 Created`: Returns the created comment.
+    - `404 Not Found`: If the post is not found.
 
-7.     GET api/posts/{id}/comments
-   Description: Get all comments for a specific post.
+**Update Comment:**
+- **PATCH** `/api/comments/{comment_id}`  
+  **Description**: Update a comment (only the comment owner can edit, and Admin can edit any comment).
+  - Response:
+    - `204 No Content`: Successfully edited the comment.
+    - `403 Forbidden`: If the user does not own the comment.
+    - `404 Not Found`: If the comment is not found.
 
-Response:
-200 OK: List of comments for the post.
-404 Not Found: If the post is not found.
+**Delete Comment:**
+- **DELETE** `/api/comments/{comment_id}`  
+  **Description**: Delete a comment (only the comment owner or the post owner can delete or Admin can delete any comment).
+  - Response:
+    - `204 No Content`: Successfully deleted the comment.
+    - `403 Forbidden`: If the user does not own the comment.
+    - `404 Not Found`: If the comment is not found.
 
-8.     POST api/posts/{id}/comments
-   Description: Add a comment to a post.
+---
 
-Response:
-201 Created: Returns the created comment.
-404 Not Found: If the post is not found.
+#### Tags Routes
 
-9.     DELETE api/comments/{id}
-    Description: Delete a comment (Only the comment owner or the post owner can delete).
+**Post Tags:**
+- **GET** `/api/posts/{id}/tags`  
+  **Description**: Get all tags for a specific post.
+  - Response:
+    - `200 OK`: List of tags for the post.
 
-Response:
-204 No Content: Successfully deleted the comment.
-403 Forbidden: If the user does not own the comment.
-404 Not Found: If the comment is not found.
+- **POST** `/api/posts/{id}/tags`  
+  **Description**: Attach tags to a post.
+  - Response:
+    - `200 OK`: Returns the updated post with attached tags.
+    - `404 Not Found`: If the post is not found.
 
-### Tags Routes
-10.     GET api/posts/{id}/tags
-    Description: Get all tags for a specific post.
+---
 
-Response:
-200 OK: Gets all tags for the post.
+#### Comments Routes
 
-11.     POST api/posts/{id}/tags
-    Description: Attach tags to a specific post.
+**User Comments:**
+- **GET**
+  `/api/my-comments`  
+  **Description**: Get all comments made by the authenticated user.
+  - Response:
+    - `200 OK`: List of comments made by the user.
 
-Response:
-200 OK: Returns the updated post with attached tags.
-404 Not Found: If the post is not found.
+---
 
-### Comments Routes
-12.     GET api/my-comments
-    Description: Get all comments made by the authenticated user.
+#### Admin Only Routes
 
-Response:
-200 OK: List of comments made by the user.
+**Update User Role (Admin Only):**
+- **PATCH**
+  `/api/users/{id}/update-role`  
+  **Description**: Update the role of a user (author).
+  - Response:
+    - `200 OK`: Returns the updated user.
+    - `403 Forbidden`: If the user is not an admin.
 
-### Admin Only Routes
-13.     PATCH /api/users/{id}/update-role
-    Description: Update the role of a author (Admin only).
+---
 
-Response:
-200 OK: Returns the updated user.
-403 Forbidden: If the user is not an admin.
+#### Search Route
 
-### Search Route
-14.     GET /api/search
-    Description: Search posts based on title, author, category, or tags.
+**Search Posts:**
+- **GET** `/api/search`  
+  **Description**: Search posts based on title, author, category, or tags.
+  - Query Parameters for search:
+    - Filter by title: `/api/search?filter[title]=post_title`
+    - Filter by author name: `/api/search?filter[author]=author_name`
+    - Filter by category name: `/api/search?filter[category]=category_name`
+    - Filter by tag name: `/api/search?filter[tag]=tag_name`
 
-### Query Parameters for search:
-1. Filter posts by title:
-2.     api/search?filter[title]=post_title
-3. Filter posts by author name:
-4.     api/search?filter[author]=author_name
-5. Filter posts by category name:
-6.     api/search?filter[category]=category_name
-7. Filter posts by tag name:
-8.     api/search?filter[tag]=tag_name
-
-
+---
