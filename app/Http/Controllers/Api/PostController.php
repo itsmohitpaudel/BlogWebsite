@@ -61,8 +61,8 @@ class PostController extends Controller
         $posts = QueryBuilder::for(Post::class)
             ->allowedFilters([
                 'title',  // Filtering posts by title
-                AllowedFilter::scope('category'), // Filter posts by category
-                AllowedFilter::scope('author'), // Filter posts by author
+                AllowedFilter::scope('category'), // Filter posts by category name
+                AllowedFilter::scope('author'), // Filter posts by author name
 
                 // Tags are store in different table
                 AllowedFilter::scope('tag'), // Filter posts by tag name
